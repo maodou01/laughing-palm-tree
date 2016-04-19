@@ -16,11 +16,6 @@ app.get('/excel',function(req,res,next){
     }
 /*excel转换并输出json文件 */
 var list = xlsx.parse("output."+ext_name);
-list.map(function(obj,index){
-    //console.log(obj);
-    //console.log(index);
-    //console.log(obj.data);
-});
 //console.log(JSON.stringify(list));
 fs.writeFileSync("output.json",JSON.stringify(list));
     res.writeHead(200, {"content-type": "text/json;charset=utf-8"});
