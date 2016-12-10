@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title></title>
+    <script src="../jquery.js"></script>
+    <style>
+        .rili{
+            width: 100%;
+            font-size: 12px;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        .rili th,.rili td{
+            border: 1px solid #ddd;
+            margin: 0;
+            padding: 5px;
+            vertical-align: top;
+        }
+        .rili td.gray{
+            color: #999;
+        }
+        .rili td.blue{
+            background-color: #0066FF;
+            color: #fff;
+        }
+        .rili td{
+            color: #0066FF;
+            text-align: center;
+        }
+        .title .pre-link{
+            float: left;
+        }
+        .title p{
+            text-align: center;
+        }
+        .title .after-link{
+            float: right;
+        }
+    </style>
+</head>
+<body>
+<div class="title">
+    <p>
+        <a class="pre-link" year="2015" month="9" href="javascript:void(0)">前</a>
+        <span year="2015" month="10">2015年10月</span>
+        <a class="after-link" year="2015" month="11" href="javascript:void(0)">后</a>
+    </p>
+</div>
+<table class="rili">
+    <thead>
+    <tr>
+        <th>日</th>
+        <th>一</th>
+        <th>二</th>
+        <th>三</th>
+        <th>四</th>
+        <th>五</th>
+        <th>六</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>29</td>
+        <td>30</td>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
+        <td>4</td>
+        <td>5</td>
+    </tr>
+    </tbody>
+</table>
+<script>
+var nowYear=new Date().getFullYear(),
+    nowMonth=new Date().getMonth()+1;
+rili(nowYear,nowMonth);
+$('.pre-link').on('click',link);
+$('.after-link').on('click',link);
+selectDay(12);
+selectDay(22);
+/*选定天*/
+function selectDay(day){
+    var tdNum=$('tbody td').length;
+    for(var i=0;i<tdNum;i++){
+        if(parseInt(day)==parseInt($('tbody td').eq(i).text())){
+            $('tbody td').eq(i).addClass('blue');
+        }
+    }
+}
+/*单击表格td*/
+function linkTd(){
+    $(this).toggleClass('blue');
+    if($(this).hasClass('blue'))
+        console.log($('.title span').attr('year')+'-'+$('.title span').attr('month')+'-'+$(this).text());
+}
+/*前后自定义函数*/
+function link(){
+    var year=parseInt($(this).attr('year')),
+        month=parseInt($(this).attr('month'));
+    rili(year,month);
+}
+/*指定年月输出日历天*/
+function rili(year,month){
+    var days=new Date(year,month,0).getDate(),
+        day1=new Date(year,month,1-days).getDay(),
+        str='',day=1;
+    for(var i=0;i<6;i++){
+        str+='<tr>';
+        for(var j=0;j<7;j++){
+            if(i==0){/*首行判断*/
+                if(j>=day1){
+                    str+='<td>'+(day++)+'</td>';
+                }else{
+                    str+='<td></td>';
+                }
+            }else if(i==5 || i==4 && day>days){/*结尾判断*/
+                if(day<=days){
+                    str+='<td>'+(day++)+'</td>';
+                }else{
+                    str+='<td></td>';
+                }
+            }else{
+                str+='<td>'+(day++)+'</td>';
+            }
+        }
+        str+='</tr>';
+    }
+    $('.pre-link').attr({
+        'year':month==1?year-1:year,
+        'month':month==1?'12':month-1
+    });
+    $('.after-link').attr({
+        'year':month==12?year+1:year,
+        'month':month==12?'1':month+1
+    });
+    $('.title span').attr({
+        'year':year,
+        'month':month
+    }).text(year+'年'+month+'月');
+    $('.rili td').off('click',linkTd);
+    $('tbody').html(str.replace(/<tr>(<td><\/td>){7}<\/tr>/ig,''));
+    $('.rili td').on('click',linkTd);
+}
+</script>
+</body>
+</html>
